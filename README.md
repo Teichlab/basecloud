@@ -40,6 +40,16 @@ If you don't see your preferred package on here, do not despair! A lot of the in
 * Go back to the Instances tab. Once the machine spawns, press the little arrow in the right of the screen for your instance's entry and select Associate Floating IP. Pick one from the dropdown. Tomas's suggestion to stick to the same one is not a bad idea! Go back to the Volumes tab. Press the little arrow in the right of the screen for your volume's entry and select Manage Attachments. Pick your machine in the dropdown. Press Attach Volume.
 * Done! You just created an instance and attached a volume to it. You can now connect to it via `ssh ubuntu@<floating-ip>`. Just a small bit of setup before you're all ready to go!
 
+### SSH configuration
+
+If you foresee yourself keeping an instance around for a long time (heavy computations happen!) or re-using the same floating IP, as per Tomas's suggestion, you can create an SSH configuration file to store the information for you. Open `~/.ssh/config` in your preferred text editor and add the following bit:
+
+	Host <your-chosen-name>
+		HostName <floating-ip>
+		User ubuntu
+
+Now you can just SSH or `rsync` with the cloud just by specifying the name you chose instead of the full `ubuntu@<floating-ip>` syntax!
+
 ### Machine-side setup
 
 Once you SSH into the machine, you need to mount the volume you created. The following code chunk creates a file system on the drive space provided (skip if you're reattaching a volume you already used in another instance), mounts it, tweaks an internal configuration file to acknowledge its existence, makes you (ubuntu) the owner and then quickly "jogs" it to see that it works. In the summer of 2017, sometimes the volumes would spawn wrong and would hang the moment they were asked to do anything borderline resembling saving files, so the precautionary measure has been kept in place as a diagnostic tool.
