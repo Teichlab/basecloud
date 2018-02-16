@@ -1,6 +1,15 @@
 # Basic R/python Teichlab computational cloud
 
-This bit of text is going to detail the process of creating a functional machine on the OpenStack cloud infrastructure, making use of a template pre-loaded with all sorts of computational goodies requested from all across the lab. The cloud does not come with mapping/genomics stuff built in, those pipelines are supported by the second template mapcloud.
+This bit of text is going to detail the process of creating a functional machine on the internal OpenStack cloud infrastructure, making use of a template pre-loaded with all sorts of computational goodies requested from all across the lab:
+
+* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle, destiny, pcaMethods, zinbwave, tidyverse, devtools, Seurat, vcfR, igraph, car, cellrangerRkit, velocyto.R, EmptyDrops
+* **python3:** scanpy, sklearn, jupyter, velocyto, snakemake, GPy, GPclust, GPflow
+* **iRODS**
+* **Docker**
+* **Julia**
+* **samtools, bcftools, biobambam2, bedtools**
+
+If you don't see your preferred package on here, do not despair! A lot of the installed options come with a truckload of dependencies, so your everyday utility (ggplot2, numpy, that sort of stuff) is here. And if it isn't here, you have the power to install more stuff within R/Rstudio, or via `sudo pip3` for python. There's also `apt-get` for more all-purpose stuff. The cloud does not come with mapping/genomics stuff built in, those pipelines are supported by the second template mapcloud.
 
 ### Basic OpenStack things
 
@@ -57,8 +66,39 @@ If you intend to use your machine for Rstudio/jupyter notebooks from the comfort
 
 	ssh -f ubuntu@<floating-ip> -L 8000:localhost:8000 -L 8765:localhost:8765 -N
 
-This will set up the ability to use Rstudio on `localhost:8765` (log in as ubuntu with a password of rstudio), and any jupyter notebooks you may spawn on `localhost:8000`. Spawning jupyter notebooks is quite easy - open up your friend `screen -DR`, navigate to the folder of relevance and call the following:
+This will set up the ability to use Rstudio on `localhost:8765` (log in as ubuntu with a password of rstudio), and any jupyter notebooks you may spawn on `localhost:8000`. This will persist until you disconnect from the internal Sanger network, and you'll have to call `ssh -f` again to reestablish the link if you lose connection. Spawning jupyter notebooks is quite easy - open up your friend `screen -DR`, navigate to the folder of relevance and call the following:
 
 	jupyter notebook --no-browser --port=8000
 
 Copy the link that you get given, paste it into your browser and you're good to go. After the first time for a given notebook, you can go back to `localhost:8000`.
+
+### Communicating with the farm and your computer
+
+You can quite easily move stuff between the cloud and the farm or your computer as desired. You can SSH into the farm from your machine by typing out the full farm address:
+
+	ssh <user-id>@farm3-login.internal.sanger.ac.uk
+
+It's recommended to use `rsync` for moving files between the different systems as it automatically assesses file integrity via MD5 sums. The `-P` flag displays progress, and you can add an `r` to it if you need to copy a whole folder. Example syntax for farm-cloud communication while on the cloud, and cloud-computer communication while on your computer (also works if you reverse the components) would be:
+
+	rsync -P <user-id>@farm3-login.internal.sanger.ac.uk:<path-on-farm> <path-on-cloud>
+	rsync -P ubuntu@<floating-ip>:<path-on-cloud> <path-on-computer>
+
+### Snapshotting your instance
+
+If you had to customise your instance quite heavily with additional programs or something of the sort, and recreating that would be difficult, you have the option of creating a snapshot of it. This way, all your configuration/setup gets preserved and you can automatically create a duplicate of the machine, just like you created a copy of the basecloud image to begin.
+
+The first thing you need to do is ensure that your volume is detached. We don't want to be snapshotting that, we just want the software and stuff on the main part of the cloud. To do that, connect to [Delta](http://delta.internal.sanger.ac.uk), go to the Volumes tab, press the little arrow in the far right of the entry for your volume and select Manage Attachments. Press Detach Volume twice. Now we just need to make a quick adjustment on the machine, adjusting system records to forget the mount ever happened and rebooting the instance to make it correctly forget about the volume.
+
+You'll need to run the `sed` below before snapshotting regardless of whether you've actually attached a volume to your machine or not, though. However, you can skip the reboot. Otherwise a newly created machine will go looking for a mounted volume, fail to find it and die. This particular file gets rewritten when a new instance gets spawned, making it irrelevant if you've actually attached a volume or not.
+
+	sudo sed 's/\/dev\/vdb/#\/dev\/vdb/g' -i /etc/fstab
+	sudo reboot & ( sleep 30; echo 'b' > /proc/sysrq-trigger )
+
+Snapshotting is super easy - you go into Delta, and in the Instances tab you press the default Create Snapshot button that appears on the right of the record of your instance. Name the snapshot something informative, preferably including your user ID, a relevant project name or something of the sort, and press Create Snapshot. Once it finishes, you can re-attach your volume and find its contents unscathed. Just follow the instructions from earlier in the document in both Delta and the machine itself, skipping the `sudo mkfs.ext4` line as you don't need to create a file system.
+
+### Deleting your instance
+
+* Go into Delta, go to Instances, press the little arrow in the right of the row of your instance record, Terminate Instance, confirm with Terminate Instance.
+* If you wish to remove the associated volume (you might want to keep it, I've never kept one personally), go to the Volumes tab, press the little arrow in the right of the row of your volume record, Delete Volume, confirm with Delete Volume.
+* If you set up the Rstudio/jupyter notebook SSH tunnel, check whether it's active by calling `ps -a | grep ssh` on your computer. If you see an entry with a command that looks like the tunnel setup from this document, or whatever modifications you may have made to it, take note of the process ID in the first column of the results, and kill it with `kill -9 <id>`.
+* Remove any host-specific SSH debris. The next time you try to connect to an instance with the same floating IP, SSH is going to get in the way as it'll have a recollection of a different machine under the same address. I just call `rm ~/.ssh/known_hosts`. If for whatever reason you're uncomfortable doing that, open the file in your text editor of choice and manually remove the line with details matching your deleted instance's floating IP.

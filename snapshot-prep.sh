@@ -25,7 +25,7 @@ sudo apt-get update && sudo apt-get -y install python3.6-dev
 #set up an alias so calling python3 fires up python3.6
 echo "alias python3=python3.6" | sudo tee -a ~/.bashrc && exec bash
 cd ~ && wget https://bootstrap.pypa.io/get-pip.py
-#yes, there's an alias in place, but this needs to be called as python3.6 or it installs it in the wrong one for some reason
+#sudo don't care about aliases
 sudo python3.6 get-pip.py && rm get-pip.py
 
 #set up irods
@@ -103,7 +103,8 @@ mv julia-d386e40c17 julia-0.6.2 && sudo ln -s ~/julia-0.6.2/bin/julia /usr/local
 #Rstudio!
 sudo apt-get -y install gdebi-core
 wget https://download2.rstudio.org/rstudio-server-1.1.423-amd64.deb
-sudo gdebi --non-interactive rstudio-server-1.1.423-amd64.deb && rm rstudio-server-1.1.423-amd64.deb
+#write Y when prompted, it defaults to N for some reason
+sudo gdebi rstudio-server-1.1.423-amd64.deb && rm rstudio-server-1.1.423-amd64.deb
 
 #set up ubuntu login for rstudio
 sudo passwd ubuntu
