@@ -9,7 +9,7 @@ This bit of text is going to detail the process of creating a functional machine
 * **Julia**
 * **samtools, bcftools, biobambam2, bedtools**
 
-If you don't see your preferred package on here, do not despair! A lot of the installed options come with a truckload of dependencies, so your everyday utility (ggplot2, numpy, that sort of stuff) is here. And if it isn't here, you have the power to install more stuff within R/Rstudio, or via `sudo pip3` for python. There's also `apt-get` for more all-purpose stuff. The cloud does not come with mapping/genomics stuff built in, those pipelines are supported by the second template mapcloud.
+If you don't see your preferred package on here, do not despair! A lot of the installed options come with a truckload of dependencies, so your everyday utility (ggplot2, numpy etc.) is here. And if it isn't here, you have the power to install more things within R/Rstudio, or via `sudo pip3` for python. There's also `apt-get` for more all-purpose stuff. The cloud does not come with mapping/genomics tools built in, those pipelines are supported by the second template mapcloud.
 
 ### Basic OpenStack things
 
