@@ -60,6 +60,10 @@ Once you SSH into the machine, you need to mount the volume you created. The fol
 	sudo chown -R ubuntu: /mnt
 	cd /mnt && dd if=/dev/zero of=deleteme oflag=direct bs=1M count=1024 && rm deleteme
 
+If you intend to work with Rstudio, you'll need to setup login credentials for your user, i.e. ubuntu. To do this, call the following line and enter rstudio as your password, re-entering it immediately thereafter:
+
+	sudo passwd ubuntu
+
 There's a bit of setup required if you intend to use iRODS. You need to grab your configuration from the farm, and then edit it to remove some farm-specific location information in `irods_environment.json`. You then need to tell a bit of internal cloud configuration to properly use iRODS by including `internal.sanger.ac.uk` and reboot the machine for the change to go into effect. Once you SSH back in, type `iinit` and give it your iRODS password. Done! Once again, all this is handled by a code snippet (you'll likely need to call the `rsync` alone and then you can paste the rest):
 
 	rsync -Pr <user-id>@farm3-login.internal.sanger.ac.uk:~/.irods ~

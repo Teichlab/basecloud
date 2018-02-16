@@ -73,7 +73,7 @@ sudo apt-get update && sudo apt-get -y install openjdk-8-jdk
 #and now setting up R packages! this runs forever, but also sets up everything humanity ever invented
 #the CRAN has to be hard-wired or the cellranger kit can't be installed from the command line because reasons
 echo 'options(repos=structure(c(CRAN="https://cran.ma.imperial.ac.uk/")))' > ~/.Rprofile
-sudo R -e 'source("https://bioconductor.org/biocLite.R"); biocLite(c("edgeR","DESeq2","BiocParallel","scater","scran","SC3","monocle","destiny","pcaMethods","zinbwave","GenomicAlignments","RSAMtools")); install.packages(c("tidyverse","devtools","ggplot2","Seurat","vcfR","igraph","car")); source("http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R"); devtools::install_github("velocyto-team/velocyto.R")'
+sudo R -e 'source("https://bioconductor.org/biocLite.R"); biocLite(c("edgeR","DESeq2","BiocParallel","scater","scran","SC3","monocle","destiny","pcaMethods","zinbwave","GenomicAlignments","RSAMtools")); install.packages(c("tidyverse","devtools","Seurat","vcfR","igraph","car")); source("http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R"); devtools::install_github("velocyto-team/velocyto.R")'
 #EmptyDrops is special and lives somewhere else
 cd ~ && git clone https://github.com/TimothyTickle/hca-jamboree-cell-identification
 cd hca-jamboree-cell-identification/src/poisson_model && sudo R CMD INSTALL package
@@ -105,10 +105,6 @@ sudo apt-get -y install gdebi-core
 wget https://download2.rstudio.org/rstudio-server-1.1.423-amd64.deb
 #write Y when prompted, it defaults to N for some reason
 sudo gdebi rstudio-server-1.1.423-amd64.deb && rm rstudio-server-1.1.423-amd64.deb
-
-#set up ubuntu login for rstudio
-sudo passwd ubuntu
-#write rstudio twice
 
 #the default rstudio port is occupied by something else. switch to port 8765
 echo 'www-port=8765' | sudo tee -a /etc/rstudio/rserver.conf
