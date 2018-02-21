@@ -3,7 +3,7 @@
 This bit of text is going to detail the process of creating a functional machine on the internal OpenStack cloud infrastructure, making use of a template pre-loaded with all sorts of computational goodies requested from all across the lab:
 
 * **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle, destiny, pcaMethods, zinbwave, tidyverse, devtools, Seurat, vcfR, igraph, car, cellrangerRkit, velocyto.R, EmptyDrops
-* **python3:** scanpy, sklearn, jupyter, velocyto, snakemake, GPy, GPclust, GPflow
+* **python3:** scanpy, sklearn, jupyter, velocyto, snakemake, GPy, GPclust, gpflow
 * **iRODS**
 * **Docker**
 * **Julia**
@@ -18,6 +18,7 @@ If you don't see your preferred package on here, do not despair! A lot of the in
 * Ideally, the volume storage should be mainly thought as space to let your analyses run and not an actual long-term storage option. You can quite easily copy data to/from the farm with `rsync`, once again I'll write how in a bit. I'd recommend saving all your analysis files to the mounted volumes as the built-in drive space of a lot of the cloud options is quite limited. Plus, you can theoretically swap volumes between machines, carrying the files across!
 * `screen -DR` is your friend. This command opens up a screen that won't stop existing when you log out of your cloud. As such, you can call this command, launch your two-week analysis and disconnect, and it will still run. Once inside the screen, use `ctrl+a, ctrl+d` to exit. You can spawn extra screens with `ctrl+a, ctrl+c` and cycle through them with `ctrl+space`. Kill off any screens you don't need by typing `exit`. There's [a lot more](http://aperiodic.net/screen/quick_reference), but this is all I've needed so far.
 * For whatever reason, whenever you `sudo` a command, `sudo: unable to resolve host <instance-name>` pops up. Ignore it, the command still ran.
+* Sometimes when you get a python3 error, it will also include `ModuleNotFoundError: No module named 'apt_pkg'`. Just ignore this bit, this is not your error, read the rest of the message to find out what's really wrong.
 
 ### Getting onto Openstack
 
