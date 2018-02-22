@@ -89,7 +89,7 @@ sudo apt-get update && sudo apt-get -y install libmaus2-dev biobambam2
 #python package time!
 #numpy/Cython need to be installed separately before everything else because otherwise GPy/velocyto get sad
 sudo pip3 install numpy Cython
-sudo pip3 install GPy scanpy sklearn jupyter velocyto snakemake
+sudo pip3 install GPy scanpy sklearn jupyter velocyto snakemake pytest
 cd ~ && git clone https://github.com/GPflow/GPflow
 cd GPflow && sudo pip3 install .
 cd ~ && git clone https://github.com/SheffieldML/GPclust
@@ -109,6 +109,10 @@ sudo gdebi rstudio-server-1.1.423-amd64.deb && rm rstudio-server-1.1.423-amd64.d
 #the default rstudio port is occupied by something else. switch to port 8765
 echo 'www-port=8765' | sudo tee -a /etc/rstudio/rserver.conf
 sudo rstudio-server verify-installation
+
+#pre-download the CRAM cache
+cd ~ && rsync -P <user-id>@farm3-login.internal.sanger.ac.uk:/lustre/scratch117/cellgen/team269/kp9/24013_1#1.cram .
+samtools fastq -1 24013-1.fastq -2 24013-2.fastq 24013_1#1.cram && rm 24013*
 
 #with that, the cloud is almost ready for picture day!
 #just need to comment out a thing that happens when a new cloud gets spun up in /etc/fstab
