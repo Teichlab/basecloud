@@ -23,7 +23,7 @@ If you don't see your preferred package on here, do not despair! A lot of the in
 ### Getting onto Openstack
 
 * In order to access the cloud, write servicedesk asking for an OpenStack account on tenant team205 (tenant is cloud slang for a group). If you intend to use iRODS from your machines, also ask to be switched to native iRODS authentication. They'll know what to do.
-* Once your cloud account email arrives, follow the instructions to retrieve your password and save it somewhere. Do not change it!
+* Once your cloud account email arrives, follow the instructions to [retrieve your password](https://ssg-confluence.internal.sanger.ac.uk/pages/viewpage.action?pageId=66031299) and save it somewhere. Do not change it!
 * Go onto [Delta](http://delta.internal.sanger.ac.uk) and log in with your Sanger user name and the password you just saved.
 * Open up a terminal. Set yourself to the user you intend to connect to the cloud as. Write `ls ~/.ssh`. If you don't see an `id_rsa.pub`file, [generate an SSH key](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-mac-os-x).
 * Write `cat ~/.ssh/id_rsa.pub` and copy the entirety of what comes out.
