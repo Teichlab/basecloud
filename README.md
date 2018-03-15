@@ -86,11 +86,11 @@ If you intend to use your machine for Rstudio/jupyter notebooks from the comfort
 
 	ssh -f ubuntu@<floating-ip> -L 8000:localhost:8000 -L 8765:localhost:8765 -N
 
-This will set up the ability to use Rstudio on `localhost:8765` (log in as ubuntu with a password of rstudio), and any jupyter notebooks you may spawn on `localhost:8000`. This will persist until you disconnect from the internal Sanger network, and you'll have to call `ssh -f` again to reestablish the link if you lose connection. Spawning jupyter notebooks is quite easy - open up your friend `screen -DR`, navigate to the folder of relevance and call the following:
+This will set up the ability to use Rstudio on `localhost:8765` (log in as ubuntu with a password of rstudio), and any jupyter notebooks you may spawn on `localhost:8000`. This will persist until you disconnect from the internal Sanger network. Spawning jupyter notebooks is quite easy - open up your friend `screen -DR`, navigate to the folder of relevance and call the following:
 
 	jupyter notebook --no-browser --port=8000
 
-Copy the link that you get given, paste it into your browser and you're good to go. After the first time for a given notebook, you can go back to `localhost:8000`.
+Copy the link that you get given, paste it into your browser and you're good to go. After the first time for a given notebook, you can go back to `localhost:8000`. Upon disconnecting from the Sanger internal network, you'll have to call `ssh -f` again to reestablish the link, plus close any open notebook tabs in your browser and launch a fresh `localhost:8000`. If you choose to instead follow the restart kernel prompt, you'll lose all your intermediate information.
 
 ### Communicating with the farm and your computer
 
