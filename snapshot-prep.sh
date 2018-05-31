@@ -59,7 +59,19 @@ wget ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-runtime-4.1.10
 wget ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-dev-4.1.10-ubuntu14-x86_64.deb
 sudo dpkg -i irods-icommands-4.1.10-ubuntu14-x86_64.deb irods-runtime-4.1.10-ubuntu14-x86_64.deb irods-dev-4.1.10-ubuntu14-x86_64.deb
 rm *.deb
-#no actual configuration at this stage to keep it user agnostic
+#internal.sanger.ac.uk configuration for irods can now be done snapshot side
+cat > 60-resolve.yaml <<EOF
+network:
+    version: 2
+    ethernets:
+        ens3:
+            dhcp4: true
+            nameservers:
+               search: [internal.sanger.ac.uk]
+EOF
+sudo mv 60-resolve.yaml /etc/netplan
+sudo netplan generate
+sudo netplan apply
 
 #the Julia thing!
 cd ~ && wget https://julialang-s3.julialang.org/bin/linux/x64/0.6/julia-0.6.2-linux-x86_64.tar.gz

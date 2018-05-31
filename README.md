@@ -69,22 +69,10 @@ If you intend to work with Rstudio, you'll need to setup login credentials for y
 
 	sudo passwd ubuntu
 
-There's a bit of setup required if you intend to use iRODS. You need to grab your configuration from the farm, and then edit it to remove some farm-specific location information in `irods_environment.json`. You then need to tell a bit of internal cloud configuration to properly use iRODS by including `internal.sanger.ac.uk`. Once that's done, type `iinit` and give it your iRODS password. Done! Once again, all the stuff is handled by a code snippet (you'll likely need to call the `rsync` alone and then you can paste the rest):
+If you intend to use iRODS, you need to grab your configuration from the farm, and then edit it to remove some farm-specific location information in `irods_environment.json`. Once that's done, type `iinit` and give it your iRODS password. Done! Once again, all the stuff is handled by a code snippet (you'll likely need to call the `rsync` alone and then you can paste the rest):
 
 	rsync -Pr <user-id>@farm3-login.internal.sanger.ac.uk:~/.irods ~
 	sed ':a;N;$!ba;s/,\n    "irods_plugins_home" : "\/opt\/renci\/icommands\/plugins\/"//g' -i ~/.irods/irods_environment.json
-	cat > 60-resolve.yaml <<EOF
-	network:
-		version: 2
-		ethernets:
-			ens3:
-				dhcp4: true
-				nameservers:
-				   search: [internal.sanger.ac.uk]
-	EOF
-	sudo mv 60-resolve.yaml /etc/netplan
-	sudo netplan generate
-	sudo netplan apply
 	iinit
 
 And with that, you're good to go! Make use of a number of popular R/python packages, some basic utility like samtools, connect to Rstudio/jupyter notebooks remotely! Oh wait, how do I do that?
