@@ -2,8 +2,8 @@
 
 This bit of text is going to detail the process of creating a functional machine on the internal OpenStack cloud infrastructure, making use of a template pre-loaded with all sorts of computational goodies requested from all across the lab:
 
-* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle, destiny, pcaMethods, zinbwave, M3Drop, DropletUtils, switchde, biomaRt, tidyverse, devtools, Seurat, vcfR, igraph, car, ggpubr, rJava, cellrangerRkit, velocyto.R, dndscv
-* **python3:** GPy, scanpy, sklearn, jupyter, jupyterlab, velocyto, snakemake, pytest, fitsne, plotly, cmake, spatialDE, MulticoreTSNE
+* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle, destiny, pcaMethods, zinbwave, M3Drop, DropletUtils, switchde, biomaRt, tidyverse, devtools, Seurat, vcfR, igraph, car, ggpubr, rJava, cellrangerRkit, velocyto.R, dndscv, IRkernel
+* **python3:** GPy, scanpy, sklearn, jupyter, jupyterlab, velocyto, snakemake, pytest, fitsne, plotly, cmake, spatialDE, MulticoreTSNE, polo, rpy2
 * **iRODS**
 * **Docker**
 * **Julia**

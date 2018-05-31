@@ -44,7 +44,7 @@ sudo python3 get-pip.py && rm get-pip.py
 #numpy/Cython need to be installed separately before everything else because otherwise GPy/velocyto get sad
 sudo apt-get -y install libfftw3-dev python3-tk
 sudo pip3 install numpy Cython
-sudo pip3 install GPy scanpy sklearn jupyter velocyto snakemake pytest fitsne plotly ggplot cmake jupyterlab spatialde
+sudo pip3 install GPy scanpy sklearn jupyter velocyto snakemake pytest fitsne plotly ggplot cmake jupyterlab spatialde polo rpy2
 #scanpy is incomplete. the docs argument you need to install these by hand, in this order
 sudo pip3 install python-igraph
 sudo pip3 install louvain
@@ -52,6 +52,9 @@ sudo pip3 install louvain
 cd ~ && git clone https://github.com/DmitryUlyanov/Multicore-TSNE
 cd Multicore-TSNE && sudo pip3 install .
 cd ~ && sudo rm -r Multicore-TSNE
+
+#post-jupyter setup of IRkernel
+sudo R -e "devtools::install_github('IRkernel/IRkernel'); IRkernel::installspec()"
 
 #set up irods
 wget ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-icommands-4.1.10-ubuntu14-x86_64.deb
