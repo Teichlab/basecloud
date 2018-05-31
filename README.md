@@ -36,7 +36,7 @@ If you don't see your preferred package on here, do not despair! A lot of the in
 * Log in to [Zeta](http://zeta.internal.sanger.ac.uk), go to the Compute tab, then Instances, press Launch Instance.
 * In Details, name the instance something informative.
 * In Source, under Select Boot Source, select Instance Snapshot. In the list that appears, find `basecloud` and press the little up arrow to the right.
-* Switch to Flavor. The flavours are a dropdown of available resource allocations you can request. Pick anything `m`, even the one-core `m1.tiny` works (and comes with 8GB RAM). If you need more cores to run something, by all means go for it! However, be mindful of your tools' abilities to actually effectively use cores and RAM, and if you go for heavier flavours be extra vigilant with removing idle instances.
+* Switch to Flavor. The flavours are a dropdown of available resource allocations you can request. Pick any `m1` flavour `m1.small` or above. If you need more cores to run something, by all means go for it! However, be mindful of your tools' abilities to actually effectively use cores and RAM, and if you go for heavier flavours be extra vigilant with removing idle instances.
 * In Networks, ensure that `cloudforms_network` is part of the network list. If it isn't, press the up arrow on the right hand side of its row and it should move up.
 * In Security Groups, press the up arrow on the right hand side of the `cloudforms_icmp_in` and `cloudforms_ssh_in` rows.
 * In Key Pair, ensure the one you created is selected. Press Launch Instance.
