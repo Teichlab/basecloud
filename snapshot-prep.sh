@@ -123,7 +123,7 @@ sudo apt-get update
 sudo apt-get -y install libmaus2-dev biobambam2
 
 #pre-download the CRAM cache
-cd ~ && wget ftp://ngs.sanger.ac.uk/production/teichmann/kp9/sample.cram
+cd ~ && wget ftp://ftp.sanger.ac.uk/pub/users/kp9/sample.cram
 samtools fastq -1 sample.fastq -2 sample-2.fastq sample.cram && rm sample*
 
 #assorted Peng stuff
@@ -133,7 +133,7 @@ sudo pip install MACS2
 sudo apt-get -y install seqtk
 cd ~ && wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-Linux_x86_64.zip
 unzip hisat2-2.1.0-Linux_x86_64.zip && rm hisat2-2.1.0-Linux_x86_64.zip
-wget -r -np -nH --cut-dirs 3 ftp://ngs.sanger.ac.uk/production/teichmann/kp9/UCSC ~
+wget -r -np -nH --cut-dirs 3 ftp://ftp.sanger.ac.uk/pub/users/kp9/UCSC ~
 chmod -R 755 ~/UCSC
 
 #the cloud is now ready for picture day!
