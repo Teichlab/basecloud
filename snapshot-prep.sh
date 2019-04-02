@@ -126,6 +126,10 @@ sudo apt-get -y install libmaus2-dev biobambam2
 cd ~ && wget ftp://ftp.sanger.ac.uk/pub/users/kp9/sample.cram
 samtools fastq -1 sample.fastq -2 sample-2.fastq sample.cram && rm sample*
 
+#so this is apparently necessary
+#or jupyter notebooks don't work
+sudo chown -R ubuntu ~/.local
+
 #assorted Peng stuff
 sudo apt-get -y install python-pip
 sudo pip install numpy
