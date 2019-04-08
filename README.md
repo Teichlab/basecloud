@@ -24,7 +24,7 @@ If you don't see your preferred package on here, do not despair! A lot of the in
 * In order to access the cloud, write servicedesk asking for:
 	- an OpenStack account on tenant team205 (tenant is cloud slang for a group)
 	- a switch to native iRODS authentication if you intend to use iRODS on your machines
-	- if you requested the above, also a copy of your new native password, which you should immediately change via `ipassword`
+	- if you requested the above, also a copy of your new native password, which you should immediately change via `ipasswd`
 * Once your cloud account email arrives, follow the instructions to [retrieve your password](https://ssg-confluence.internal.sanger.ac.uk/pages/viewpage.action?pageId=66031299) and save it somewhere. Do not change it!
 * Go onto [Eta](http://eta.internal.sanger.ac.uk) and log in with your Sanger user name and the password you just saved.
 * Open up a terminal. Set yourself to the user you intend to connect to the cloud as. Write `ls ~/.ssh`. If you don't see an `id_rsa.pub`file, [generate an SSH key](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-mac-os-x).
@@ -60,7 +60,9 @@ Now you can just SSH or `rsync` with the cloud just by specifying the name you c
 
 Once you SSH into the machine, you need to mount the volume you created. The following code chunk creates a file system on the drive space provided (skip if you're reattaching a volume you already used in another instance), mounts it, tweaks an internal configuration file to acknowledge its existence, makes you (ubuntu) the owner and then quickly "jogs" it to see that it works. In the summer of 2017, sometimes the volumes would spawn wrong and would hang the moment they were asked to do anything borderline resembling saving files, so the precautionary measure has been kept in place as a diagnostic tool.
 
+	#start here if creating new volume
 	sudo mkfs.ext4 /dev/vdb
+	#start here if reattaching existing volume
 	sudo mount /dev/vdb /mnt
 	echo -e "/dev/vdb\t/mnt\text4\tdefaults\t0\t0" | sudo tee -a /etc/fstab
 	sudo chown -R ubuntu: /mnt
@@ -100,6 +102,43 @@ It's recommended to use `rsync` for moving files between the different systems a
 
 	rsync -P <user-id>@farm3-login.internal.sanger.ac.uk:<path-on-farm> <path-on-cloud>
 	rsync -P ubuntu@<floating-ip>:<path-on-cloud> <path-on-computer>
+
+### Communicating with Google Drive
+
+Sometimes you're working with someone who can't access the farm (or just isn't particularly farm-savvy), and you need to get stuff to Google Drive to share it with them. Basecloud comes with rclone baked in, which allows you to skip the step of downloading to your computer and then manually uploading from there. The [official write-up](https://rclone.org/drive/) is a bit daunting, the main things we need to learn how to do is set up the connection in the first place and copy things to/from the drive while on the instance.
+
+* Write `rclone config`
+* In the choice that comes up, write `n`
+* Under `name`, write `remote`
+* Find Google Drive in the list, it will almost certainly come with `"drive"` in the line below it. If so, write `drive`. If not, write whatever quoted string comes in the line below Google Drive.
+* Skip `client_id` and `client_secret` (press enter twice)
+* Under `scope`, write `1`
+* Skip `root_folder_id` and `service_account_file` (press enter twice)
+* Write `n` for editing the advanced config
+* When asked about auto-config, write `n`. This will return a URL which you should paste into your browser and authorise rclone for Google Drive. Copy the resulting code and paste it back into the config script.
+* Write `n` for team drive
+* Write `y` to confirm the remote addition, and `q` to leave the config program
+
+Once that's done, you'll be able to access your Google Drive via rclone, with it living under `remote:`. The main command will be `rclone copy`, which is similar in function to `rsync`.
+
+	rclone copy <path-on-cloud> remote:<path-on-google-drive>
+	rclone copy remote:<path-on-google-drive> <path-on-cloud>
+
+Here's a script I wrote to automatically synchronise a number of folders to the Google Drive folder `Roser-Endometrium/endometrium` while automatically producing HTML renders of all existing jupyter notebooks. Only folders starting with the letter N are considered. Maybe the general ideas herein will be of use to someone?
+
+	#!/bin/bash
+	set -e
+
+	for DIR in `ls | grep "^N"`
+	do
+		cd $DIR
+		for FID in *.ipynb
+		do
+			jupyter nbconvert --to html $FID
+		done
+		cd ..
+		rclone copy $DIR remote:/Roser-Endometrium/endometrium/$DIR
+	done
 
 ### Snapshotting your instance
 

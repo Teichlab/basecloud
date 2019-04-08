@@ -123,6 +123,7 @@ sudo apt-get update
 sudo apt-get -y install libmaus2-dev biobambam2
 
 #pre-download the CRAM cache
+#(this lives in /nfs/disk69/ftp/pub/users/kp9 on the farm)
 cd ~ && wget ftp://ftp.sanger.ac.uk/pub/users/kp9/sample.cram
 samtools fastq -1 sample.fastq -2 sample-2.fastq sample.cram && rm sample*
 
