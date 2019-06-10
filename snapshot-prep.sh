@@ -140,6 +140,14 @@ cd ~ && wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-Linux_x86_64.zip
 unzip hisat2-2.1.0-Linux_x86_64.zip && rm hisat2-2.1.0-Linux_x86_64.zip
 wget -r -np -nH --cut-dirs 3 ftp://ftp.sanger.ac.uk/pub/users/kp9/UCSC ~
 chmod -R 755 ~/UCSC
+sudo pip3 install cutadapt scrublet
+cd ~ && git clone https://github.com/broadinstitute/picard.git
+cd picard && ./gradlew shadowJar
+
+#make monocle 3 be the default monocle
+#start off with ghost dependencies
+sudo apt-get -y install libudunits2-dev libgdal-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
+sudo R -e 'devtools::install_github("cole-trapnell-lab/DDRTree", ref="simple-ppt-like"); devtools::install_github("cole-trapnell-lab/L1-graph"); devtools::install_github("cole-trapnell-lab/monocle-release", ref="monocle3_alpha")'
 
 #the cloud is now ready for picture day!
 #go back to eta, instances, create snapshot of the instance, name it something useful (basecloud comes to mind)

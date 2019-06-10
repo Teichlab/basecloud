@@ -2,15 +2,17 @@
 
 This bit of text is going to detail the process of creating a functional machine on the internal OpenStack cloud infrastructure, making use of a template pre-loaded with all sorts of computational goodies requested from all across the lab:
 
-* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle, destiny, pcaMethods, zinbwave, M3Drop, DropletUtils, switchde, biomaRt, tidyverse, devtools, Seurat, vcfR, igraph, car, ggpubr, rJava, cellrangerRkit, velocyto.R, dndscv, harmony, IRkernel
-* **python3:** GPy, scanpy, sklearn, scvelo, bbknn, palantir, wot, cellphonedb, pyscenic, diffxpy, jupyter, jupyterlab, velocyto, snakemake, pytest, fitsne, plotly, cmake, spatialDE, MulticoreTSNE, polo, rpy2
+* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle3, destiny, pcaMethods, zinbwave, M3Drop, DropletUtils, switchde, biomaRt, tidyverse, devtools, Seurat, vcfR, igraph, car, ggpubr, rJava, cellrangerRkit, velocyto.R, dndscv, harmony, IRkernel
+* **python3:** GPy, scanpy, sklearn, scvelo, bbknn, scrublet, palantir, wot, cellphonedb, pyscenic, diffxpy, jupyter, jupyterlab, velocyto, snakemake, pytest, fitsne, plotly, cmake, spatialDE, MulticoreTSNE, polo, rpy2, cutadapt
 * **iRODS**
 * **Docker**
 * **Julia**
 * **UCSC tools**
-* **samtools, bcftools, biobambam2, bedtools, hisat2, htop, MACS2, parallel, rclone, seqtk, sshfs**
+* **samtools, bcftools, biobambam2, bedtools, hisat2, htop, MACS2, parallel, picard, rclone, seqtk, sshfs**
 
 If you don't see your preferred package on here, do not despair! A lot of the installed options come with a truckload of dependencies, so your everyday utility (ggplot2, numpy etc.) is here. And if it isn't here, you have the power to install more things within R/Rstudio, or via `sudo pip3` for python. There's also `apt-get` for more all-purpose stuff. The cloud does not come with mapping/genomics tools built in, those pipelines are supported by the second template mapcloud.
+
+Monocle 3's quite easily reverted to version 2. Just call this: `sudo R -e 'remove.packages("monocle"); BiocManager::install("monocle")'`
 
 ### Basic OpenStack things
 
