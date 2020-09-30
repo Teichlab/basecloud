@@ -58,7 +58,7 @@ sudo ./llvm.sh 10
 rm llvm.sh
 LLVM_CONFIG=/usr/lib/llvm-10/bin/llvm-config pip3 install llvmlite
 #with that in place, this should hopefully run
-sudo pip3 install python-igraph louvain leidenalg GPy scanpy sklearn jupyter velocyto snakemake pytest fitsne plotly ggplot cmake jupyterlab spatialde polo rpy2 bbknn scvelo wot cellphonedb pyscenic scirpy scvi-tools sccaf
+sudo pip3 install python-igraph louvain leidenalg GPy scanpy sklearn jupyter velocyto snakemake pytest fitsne plotly ggplot cmake jupyterlab spatialde polo rpy2 bbknn scvelo wot cellphonedb pyscenic scirpy scvi-tools sccaf palantir
 #scanpy is incomplete. the docs argument you need to install these by hand, in this order
 #...and this also helps with run time, but is buried as a hint on one of the documentation pages
 cd ~ && git clone https://github.com/DmitryUlyanov/Multicore-TSNE

@@ -12,8 +12,6 @@ This bit of text is going to detail the process of creating a functional machine
 
 If you don't see your preferred package on here, do not despair! A lot of the installed options come with a truckload of dependencies, so your everyday utility (ggplot2, numpy etc.) is here. And if it isn't here, you have the power to install more things within R/Rstudio, or via `sudo pip3` for python. There's also `apt-get` for more all-purpose stuff. The cloud does not come with mapping/genomics tools built in, those pipelines are supported by the second template mapcloud.
 
-Monocle 3's quite easily reverted to version 2. Just call this: `sudo R -e 'remove.packages("monocle"); BiocManager::install("monocle")'`
-
 ### Basic OpenStack things
 
 * The Teichlab allocation on OpenStack was estimated for 15 active users with reasonable computational needs, assuming a `m1.xlarge` instance per head with a 1TB volume to boot. As such, try not to use more than its resource total (26 cores, 236,600 MB RAM, 2TB volume space) at a time between all your instances. If you do end up using more (dire computational straits happen), please free it up in a timely manner.
