@@ -60,9 +60,12 @@ Now you can just SSH or `rsync` with the cloud just by specifying the name you c
 
 Once you SSH into the machine, you need to mount the volume you created. The following code chunk creates a file system on the drive space provided (skip if you're reattaching a volume you already used in another instance), mounts it, tweaks an internal configuration file to acknowledge its existence, makes you (ubuntu) the owner and then quickly "jogs" it to see that it works. In the summer of 2017, sometimes the volumes would spawn wrong and would hang the moment they were asked to do anything borderline resembling saving files, so the precautionary measure has been kept in place as a diagnostic tool.
 
-	#start here if creating new volume
+**Run this line if you're creating a new volume from scratch. Skip it if you're reattaching an existing volume with stuff on it.**
+
 	sudo mkfs.ext4 /dev/vdb
-	#start here if reattaching existing volume
+
+Then run this for both cases:
+
 	sudo mount /dev/vdb /mnt
 	echo -e "/dev/vdb\t/mnt\text4\tdefaults\t0\t0" | sudo tee -a /etc/fstab
 	sudo chown -R ubuntu: /mnt
