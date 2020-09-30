@@ -97,13 +97,13 @@ Copy the link that you get given, paste it into your browser and you're good to 
 
 ### Communicating with the farm and your computer
 
-You can quite easily move stuff between the cloud and the farm or your computer as desired. You can SSH into the farm from your machine by typing out the full farm address:
+You can quite easily move stuff between the cloud and the farm or your computer as desired. You can SSH into the farm from your machine:
 
-	ssh <user-id>@farm3-login.internal.sanger.ac.uk
+	ssh <user-id>@farm5-login
 
 It's recommended to use `rsync` for moving files between the different systems as it automatically assesses file integrity via MD5 sums. The `-P` flag displays progress, and you can add an `r` to it if you need to copy a whole folder. Example syntax for farm-cloud communication while on the cloud, and cloud-computer communication while on your computer (also works if you reverse the components) would be:
 
-	rsync -P <user-id>@farm3-login.internal.sanger.ac.uk:<path-on-farm> <path-on-cloud>
+	rsync -P <user-id>@farm5-login:<path-on-farm> <path-on-cloud>
 	rsync -P ubuntu@<floating-ip>:<path-on-cloud> <path-on-computer>
 
 ### Communicating with Google Drive
