@@ -19,7 +19,7 @@ sudo apt-get update
 #install R, and various useful things
 sudo apt-get -y install r-base build-essential xorg-dev libreadline-dev libc6-dev zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev libcairo2-dev libpango1.0-dev tcl-dev tk-dev openjdk-8-jdk openjdk-8-jre gfortran
 
-#Rstudio!
+#Rstudio! keep this version if possible, 1.3.1093 had some libssl hiccup
 sudo apt-get -y install gdebi-core
 wget https://download2.rstudio.org/rstudio-server-1.1.463-amd64.deb
 #write Y when prompted, it defaults to N for some reason
@@ -30,13 +30,15 @@ sudo rstudio-server verify-installation
 
 #R package time!
 #deal with the mountain of dependencies, some of which are external and quiet about it
-sudo apt-get -y install libgsl0-dev libxml2-dev libboost-all-dev libssl-dev libhdf5-dev unzip
+sudo apt-get -y install libgsl0-dev libxml2-dev libboost-all-dev libssl-dev libhdf5-dev unzip libudunits2-dev libgdal-dev libgeos-dev libproj-dev
 #and now setting up R packages! this runs forever, but also sets up everything humanity ever invented
-#the CRAN has to be hard-wired or the cellranger kit can't be installed from the command line because reasons
-#while in turn the ~/.Renviron thing is so that devtools::install_github() works
+#the ~/.Renviron thing is so that devtools::install_github() works
+#and the javareconf is for rJava
 echo 'options(repos=structure(c(CRAN="https://cran.ma.imperial.ac.uk/")))' > ~/.Rprofile
 echo 'R_UNZIPCMD=/usr/bin/unzip' > ~/.Renviron
-sudo R -e 'install.packages("BiocManager"); BiocManager::install(c("edgeR","DESeq2","BiocParallel","scater","scran","SC3","monocle","destiny","pcaMethods","zinbwave","GenomicAlignments","RSAMtools","M3Drop","DropletUtils","switchde","biomaRt")); install.packages(c("tidyverse","devtools","Seurat","vcfR","igraph","car","ggpubr","rJava")); source("http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R"); devtools::install_github("velocyto-team/velocyto.R"); devtools::install_github("im3sanger/dndscv"); devtools::install_github("immunogenomics/harmony")'
+sudo R CMD javareconf
+#the cellranger toolkit has been deprecated, and current R can't install it as too old
+sudo R -e 'install.packages("BiocManager"); BiocManager::install(c("edgeR","DESeq2","BiocParallel","scater","scran","SC3","monocle","destiny","pcaMethods","zinbwave","GenomicAlignments","RSAMtools","M3Drop","DropletUtils","switchde","biomaRt","batchelor","Matrix.utils")); install.packages(c("tidyverse","devtools","Seurat","vcfR","igraph","car","ggpubr","rJava","SoupX")); devtools::install_github("velocyto-team/velocyto.R"); devtools::install_github("im3sanger/dndscv"); devtools::install_github("immunogenomics/harmony"); devtools::install_github("cole-trapnell-lab/leidenbase"); devtools::install_github("cole-trapnell-lab/monocle3")'
 
 #many things of general utility
 sudo apt-get -y install samtools bcftools bedtools htop parallel sshfs
@@ -47,20 +49,22 @@ curl https://rclone.org/install.sh | sudo bash
 #python package time! start with pip
 sudo apt-get -y install python3-pip
 #numpy/Cython need to be installed separately before everything else because otherwise GPy/velocyto get sad
-sudo apt-get -y install libfftw3-dev python3-tk
+sudo apt-get -y install libfftw3-dev python3-tk bison flex
 sudo pip3 install numpy Cython
-sudo pip3 install GPy scanpy sklearn jupyter velocyto snakemake pytest fitsne plotly ggplot cmake jupyterlab spatialde polo rpy2 bbknn scvelo wot cellphonedb pyscenic
+#for some reason, llvmlite is now a massive pain
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 10
+rm llvm.sh
+LLVM_CONFIG=/usr/lib/llvm-10/bin/llvm-config pip3 install llvmlite
+#with that in place, this should hopefully run
+sudo pip3 install python-igraph louvain leidenalg GPy scanpy sklearn jupyter velocyto snakemake pytest fitsne plotly ggplot cmake jupyterlab spatialde polo rpy2 bbknn scvelo wot cellphonedb pyscenic scirpy scvi-tools sccaf
 #scanpy is incomplete. the docs argument you need to install these by hand, in this order
-sudo pip3 install python-igraph
-sudo pip3 install louvain leidenalg
 #...and this also helps with run time, but is buried as a hint on one of the documentation pages
 cd ~ && git clone https://github.com/DmitryUlyanov/Multicore-TSNE
 cd Multicore-TSNE && sudo pip3 install .
 cd ~ && sudo rm -r Multicore-TSNE
 #other non-pip packages
-cd ~ && git clone git://github.com/dpeerlab/Palantir.git
-cd Palantir && sudo pip3 install .
-cd ~ && sudo rm -r Palantir
 sudo pip3 install tensorflow tensorflow-probability
 cd ~ && git clone https://github.com/theislab/batchglm
 cd batchglm && sudo pip3 install .
@@ -73,11 +77,16 @@ cd ~ && sudo rm -r diffxpy
 sudo R -e "devtools::install_github('IRkernel/IRkernel'); IRkernel::installspec()"
 
 #set up irods
-wget ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-icommands-4.1.10-ubuntu14-x86_64.deb
-wget ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-runtime-4.1.10-ubuntu14-x86_64.deb
-wget ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-dev-4.1.10-ubuntu14-x86_64.deb
-sudo dpkg -i irods-icommands-4.1.10-ubuntu14-x86_64.deb irods-runtime-4.1.10-ubuntu14-x86_64.deb irods-dev-4.1.10-ubuntu14-x86_64.deb
-rm *.deb
+wget -qO - https://packages.irods.org/irods-signing-key.asc | sudo apt-key add -
+echo "deb [arch=amd64] https://packages.irods.org/apt/ xenial main" | sudo tee /etc/apt/sources.list.d/renci-irods.list
+sudo apt-get update
+#this thing had some interactive installer pop up. three enters, then swapped to "NO" at NFS mention and stayed there
+sudo apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" ldap-utils sssd sssd-tools ldap-auth-config libldap-2.4-2 libpam-sss libnss-sss
+sudo apt-get install -y irods-icommands=4.2.7 irods-runtime=4.2.7
+wget http://people.renci.org/~tgr/sanger-427-imeta-dash-z/irods-icommands_4.2.7~xenial_amd64.deb
+sudo dpkg -i irods-icommands_4.2.7~xenial_amd64.deb
+rm irods-icommands_4.2.7~xenial_amd64.deb
+DEFAULT_USER="ubuntu"
 #internal.sanger.ac.uk configuration for irods can now be done snapshot side
 cat > 60-resolve.yaml <<EOF
 network:
@@ -93,9 +102,9 @@ sudo netplan generate
 sudo netplan apply
 
 #the Julia thing!
-cd ~ && wget https://julialang-s3.julialang.org/bin/linux/x64/1.1/julia-1.1.0-linux-x86_64.tar.gz
-tar -xzvf julia-1.1.0-linux-x86_64.tar.gz && rm julia-1.1.0-linux-x86_64.tar.gz
-sudo ln -s ~/julia-1.1.0/bin/julia /usr/local/bin/julia
+cd ~ && wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.2-linux-x86_64.tar.gz
+tar -xzvf julia-1.5.2-linux-x86_64.tar.gz && rm julia-1.5.2-linux-x86_64.tar.gz
+sudo ln -s ~/julia-1.5.2/bin/julia /usr/local/bin/julia
 
 #Docker install (this only properly starts working after relogging into the instance)
 sudo groupadd docker
@@ -132,22 +141,31 @@ samtools fastq -1 sample.fastq -2 sample-2.fastq sample.cram && rm sample*
 sudo chown -R ubuntu ~/.local
 
 #assorted Peng stuff
-sudo apt-get -y install python-pip
-sudo pip install numpy
-sudo pip install MACS2
+sudo pip3 install MACS2
 sudo apt-get -y install seqtk
-cd ~ && wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-Linux_x86_64.zip
-unzip hisat2-2.1.0-Linux_x86_64.zip && rm hisat2-2.1.0-Linux_x86_64.zip
+cd ~ && wget https://cloud.biohpc.swmed.edu/index.php/s/4pMgDq4oAF9QCfA/download
+mv download hisat2-2.2.1-Linux_x86_64.zip
+unzip hisat2-2.2.1-Linux_x86_64.zip && rm hisat2-2.2.1-Linux_x86_64.zip
 wget -r -np -nH --cut-dirs 3 ftp://ftp.sanger.ac.uk/pub/users/kp9/UCSC ~
 chmod -R 755 ~/UCSC
 sudo pip3 install cutadapt scrublet
 cd ~ && git clone https://github.com/broadinstitute/picard.git
-cd picard && ./gradlew shadowJar
+cd picard && ./gradlew shadowJar && cd ..
 
-#make monocle 3 be the default monocle
-#start off with ghost dependencies
-sudo apt-get -y install libudunits2-dev libgdal-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
-sudo R -e 'devtools::install_github("cole-trapnell-lab/DDRTree", ref="simple-ppt-like"); devtools::install_github("cole-trapnell-lab/L1-graph"); devtools::install_github("cole-trapnell-lab/monocle-release", ref="monocle3_alpha")'
+#fresh singularity for souporcell to work
+sudo apt-get update
+sudo apt-get install -y build-essential libssl-dev uuid-dev libgpgme11-dev squashfs-tools libseccomp-dev wget pkg-config git cryptsetup
+export VERSION=1.13 OS=linux ARCH=amd64 && \  # Replace the values as needed
+  wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \ # Downloads the required Go package
+  sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \ # Extracts the archive
+  rm go$VERSION.$OS-$ARCH.tar.gz    # Deletes the ``tar`` file
+echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc && source ~/.bashrc
+export VERSION=3.6.3 && # adjust this as necessary \
+  wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
+  tar -xzf singularity-${VERSION}.tar.gz && \
+  cd singularity
+./mconfig && make -C builddir && sudo make -C builddir install
+cd .. && sudo rm -r go && rm -r singularity && rm singularity-3.6.3.tar.gz
 
 #the cloud is now ready for picture day!
 #go back to eta, instances, create snapshot of the instance, name it something useful (basecloud comes to mind)

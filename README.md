@@ -2,10 +2,10 @@
 
 This bit of text is going to detail the process of creating a functional machine on the internal OpenStack cloud infrastructure, making use of a template pre-loaded with all sorts of computational goodies requested from all across the lab:
 
-* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle3, destiny, pcaMethods, zinbwave, M3Drop, DropletUtils, switchde, biomaRt, tidyverse, devtools, Seurat, vcfR, igraph, car, ggpubr, rJava, cellrangerRkit, velocyto.R, dndscv, harmony, IRkernel
-* **python3:** GPy, scanpy, sklearn, scvelo, bbknn, scrublet, palantir, wot, cellphonedb, pyscenic, diffxpy, jupyter, jupyterlab, velocyto, snakemake, pytest, fitsne, plotly, cmake, spatialDE, MulticoreTSNE, polo, rpy2, cutadapt
+* **R/Rstudio:** edgeR, DESeq2, scater, scran, monocle, monocle3, destiny, pcaMethods, zinbwave, M3Drop, DropletUtils, switchde, biomaRt, tidyverse, devtools, Seurat, vcfR, igraph, car, ggpubr, rJava, velocyto.R, dndscv, harmony, IRkernel, SoupX
+* **python3:** GPy, scanpy, sklearn, scvelo, bbknn, scrublet, palantir, wot, cellphonedb, pyscenic, diffxpy, jupyter, jupyterlab, velocyto, snakemake, pytest, fitsne, plotly, cmake, spatialDE, MulticoreTSNE, polo, rpy2, cutadapt, scirpy, scvi-tools, sccaf
 * **iRODS**
-* **Docker**
+* **Docker, Singularity**
 * **Julia**
 * **UCSC tools**
 * **samtools, bcftools, biobambam2, bedtools, hisat2, htop, MACS2, parallel, picard, rclone, seqtk, sshfs**
@@ -16,7 +16,7 @@ Monocle 3's quite easily reverted to version 2. Just call this: `sudo R -e 'remo
 
 ### Basic OpenStack things
 
-* The Teichlab allocation on OpenStack was estimated for 10 active users with reasonable computational needs, assuming a `m1.2xlarge` instance per head with a 2TB volume to boot. As such, try not to use more than its resource total (26 cores, 236,600 MB RAM, 2TB volume space) at a time between all your instances. If you do end up using more (dire computational straits happen), please free it up in a timely manner.
+* The Teichlab allocation on OpenStack was estimated for 15 active users with reasonable computational needs, assuming a `m1.xlarge` instance per head with a 1TB volume to boot. As such, try not to use more than its resource total (26 cores, 236,600 MB RAM, 2TB volume space) at a time between all your instances. If you do end up using more (dire computational straits happen), please free it up in a timely manner.
 * Even when not extending past your bit of resources, try to keep your instance life to a minimum. I'm not saying kill off your cloud if you wait two hours between analyses, but if the machine has been sitting around idly for a week you should probably get rid of it. The templates come stocked with a lot of requested tools to make killing off your machines as painless as possible, as pretty much everything will be waiting for you when you make a new one. If you set up something particularly annoying that you don't want to do again, you can take a personalised snapshot of your cloud. I'll walk you through the steps later on in the document.
 * Ideally, the volume storage should be mainly thought as space to let your analyses run and not an actual long-term storage option. You can quite easily copy data to/from the farm with `rsync`, once again I'll write how in a bit. I'd recommend saving all your analysis files to the mounted volumes as the built-in drive space of a lot of the cloud options is quite limited. Plus, you can theoretically swap volumes between machines, carrying the files across!
 * `screen -DR` is your friend. This command opens up a screen that won't stop existing when you log out of your cloud. As such, you can call this command, launch your two-week analysis and disconnect, and it will still run. Once inside the screen, use `ctrl+a, ctrl+d` to exit. You can spawn extra screens with `ctrl+a, ctrl+c` and cycle through them with `ctrl+space`. Kill off any screens you don't need by typing `exit`. There's [a lot more](http://aperiodic.net/screen/quick_reference), but this is all I've needed so far.
@@ -28,15 +28,15 @@ Monocle 3's quite easily reverted to version 2. Just call this: `sudo R -e 'remo
 	- a switch to native iRODS authentication if you intend to use iRODS on your machines
 	- if you requested the above, also a copy of your new native password, which you should immediately change via `ipasswd`
 * Once your cloud account email arrives, follow the instructions to [retrieve your password](https://ssg-confluence.internal.sanger.ac.uk/pages/viewpage.action?pageId=66031299) and save it somewhere. Do not change it!
-* Go onto [Eta](http://eta.internal.sanger.ac.uk) and log in with your Sanger user name and the password you just saved.
+* Go onto [Theta](http://theta.internal.sanger.ac.uk) and log in with your Sanger user name and the password you just saved.
 * Open up a terminal. Set yourself to the user you intend to connect to the cloud as. Write `ls ~/.ssh`. If you don't see an `id_rsa.pub`file, [generate an SSH key](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-mac-os-x).
 * Write `cat ~/.ssh/id_rsa.pub` and copy the entirety of what comes out.
-* Go to the Compute tab of [Eta](http://eta.internal.sanger.ac.uk), then Instances. Press Launch Instance. Go to the Key Pair tab. Press Import Key Pair. Paste in the bit you just copied into Public Key. Name the key pair something informative, such as your Sanger user ID. Press Import Key Pair.
+* Go to the Compute tab of [Theta](http://theta.internal.sanger.ac.uk), then Instances. Press Launch Instance. Go to the Key Pair tab. Press Import Key Pair. Paste in the bit you just copied into Public Key. Name the key pair something informative, such as your Sanger user ID. Press Import Key Pair.
 * Done! You can now access the website to create/manage your machines and volumes, and have set up SSH for connecting to the cloud from your computer.
 
 ### Creating a basic R/python machine from the image
 
-* Log in to [Eta](http://eta.internal.sanger.ac.uk), go to the Compute tab, then Instances, press Launch Instance.
+* Log in to [Theta](http://theta.internal.sanger.ac.uk), go to the Compute tab, then Instances, press Launch Instance.
 * In Details, name the instance something informative.
 * In Source, under Select Boot Source, select Instance Snapshot. In the list that appears, find `basecloud` and press the little up arrow to the right.
 * Switch to Flavor. The flavours are a dropdown of available resource allocations you can request. Pick any `m1` flavour `m1.small` or above. If you need more cores to run something, by all means go for it! However, be mindful of your tools' abilities to actually effectively use cores and RAM, and if you go for heavier flavours be extra vigilant with removing idle instances.
@@ -146,16 +146,16 @@ Here's a script I wrote to automatically synchronise a number of folders to the 
 
 If you had to customise your instance quite heavily with additional programs or something of the sort, and recreating that would be difficult, you have the option of creating a snapshot of it. This way, all your configuration/setup gets preserved and you can automatically create a duplicate of the machine, just like you created a copy of the basecloud image to begin.
 
-Assuming you've attached a volume, you'll need to detach it before the snapshotting and remove any knowledge of it from the instance's configuration files. To do that, connect to [Eta](http://eta.internal.sanger.ac.uk), go to the Volumes tab, press the little arrow in the far right of the entry for your volume and select Manage Attachments. Press Detach Volume twice. Now we just need to make a quick tweak on the machine, adjusting system records to forget the mount ever happened and rebooting the instance to make it correctly forget about the volume. You can skip executing this code snippet if you did not mount a volume. However, if you do not execute it but had one mounted, a newly created machine will go looking for a mounted volume, fail to find it and die, rendering your snapshot useless.
+Assuming you've attached a volume, you'll need to detach it before the snapshotting and remove any knowledge of it from the instance's configuration files. To do that, connect to [Theta](http://theta.internal.sanger.ac.uk), go to the Volumes tab, press the little arrow in the far right of the entry for your volume and select Manage Attachments. Press Detach Volume twice. Now we just need to make a quick tweak on the machine, adjusting system records to forget the mount ever happened and rebooting the instance to make it correctly forget about the volume. You can skip executing this code snippet if you did not mount a volume. However, if you do not execute it but had one mounted, a newly created machine will go looking for a mounted volume, fail to find it and die, rendering your snapshot useless.
 
 	sudo sed '/^\/dev\/vdb/ d' -i /etc/fstab
 	sudo reboot & ( sleep 30; echo 'b' > /proc/sysrq-trigger )
 
-Snapshotting is super easy - you go into Eta, and in the Instances tab you press the default Create Snapshot button that appears on the right of the record of your instance. Name the snapshot something informative, preferably including your user ID, a relevant project name or something of the sort, and press Create Snapshot. Once it finishes, you can re-attach your volume and find its contents unscathed. Just follow the instructions from earlier in the document in both Eta and the machine itself, skipping the `sudo mkfs.ext4` line as you don't need to create a file system.
+Snapshotting is super easy - you go into Theta, and in the Instances tab you press the default Create Snapshot button that appears on the right of the record of your instance. Name the snapshot something informative, preferably including your user ID, a relevant project name or something of the sort, and press Create Snapshot. Once it finishes, you can re-attach your volume and find its contents unscathed. Just follow the instructions from earlier in the document in both Theta and the machine itself, skipping the `sudo mkfs.ext4` line as you don't need to create a file system.
 
 ### Deleting your instance
 
-* Go into Eta, go to Compute, then Instances, press the little arrow in the right of the row of your instance record, Delete Instance, confirm with Delete Instance.
+* Go into Theta, go to Compute, then Instances, press the little arrow in the right of the row of your instance record, Delete Instance, confirm with Delete Instance.
 * If you wish to remove the associated volume (you might want to keep it, I've never kept one personally), go to the Volumes tab, then Volumes, press the little arrow in the right of the row of your volume record, Delete Volume, confirm with Delete Volume.
 * If you set up the Rstudio/jupyter notebook SSH tunnel, call `ps aux | grep ssh` on your computer to identify the tunnel process. If you see an entry with a command that looks like the tunnel setup from this document, or whatever modifications you may have made to it, take note of the process ID in the second column of the results, and kill it with `kill -9 <id>`.
 * Remove any host-specific SSH debris. The next time you try to connect to an instance with the same floating IP, SSH is going to get in the way as it'll have a recollection of a different machine under the same address. I just call `rm ~/.ssh/known_hosts`. If for whatever reason you're uncomfortable doing that, open the file in your text editor of choice and manually remove the line with details matching your deleted instance's floating IP.
