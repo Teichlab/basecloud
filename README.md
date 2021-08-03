@@ -25,7 +25,7 @@ Ensure you've got all of the following sorted out to start.
   * Martin Prete (mp33), asking for access to JupyterHub.
   * Krzysztof Polanski (kp9), asking for membership in the Teichlab GitHub organisation, granting access to [Scripts](https://github.com/Teichlab/mapcloud/tree/master/scripts) and [sctk](https://github.com/Teichlab/sctk) repositories.
 
-For most analysis needs, JupyterHub is likely to suffice.
+For most analysis needs, JupyterHub is likely to suffice. In fact, the teichlab image is mirrored after basecloud.
 
 ### Basic OpenStack things
 
