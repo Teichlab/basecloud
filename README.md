@@ -19,12 +19,22 @@ If you don't see your preferred package on here, do not despair! A lot of the in
 * Ideally, the volume storage should be mainly thought as space to let your analyses run and not an actual long-term storage option. You can quite easily copy data to/from the farm with `rsync`, once again I'll write how in a bit. I'd recommend saving all your analysis files to the mounted volumes as the built-in drive space of a lot of the cloud options is quite limited. Plus, you can theoretically swap volumes between machines, carrying the files across!
 * `screen -DR` is your friend. This command opens up a screen that won't stop existing when you log out of your cloud. As such, you can call this command, launch your two-week analysis and disconnect, and it will still run. Once inside the screen, use `ctrl+a, ctrl+d` to exit. You can spawn extra screens with `ctrl+a, ctrl+c` and cycle through them with `ctrl+space`. Kill off any screens you don't need by typing `exit`. There's [a lot more](http://aperiodic.net/screen/quick_reference), but this is all I've needed so far.
 
-### Getting onto Openstack
+### New starter checklist
 
-* In order to access the cloud, write servicedesk asking for:
-	- an OpenStack account on tenant team205 (tenant is cloud slang for a group)
-	- a switch to native iRODS authentication if you intend to use iRODS on your machines
-	- if you requested the above, also a copy of your new native password, which you should immediately change via `ipasswd`
+Ensure you've got all of the following sorted out.
+
+* Use your Sanger login credentials to get access to:
+  * [VPN](https://www.sanger.ac.uk/covid/)
+  * Mattermost. Open the Mattermost app that comes installed on the laptop, and add a new server under server management. Provide https://mattermost.sanger.ac.uk/teichmann as the address, and Teichmann Group as the display name. You'll be able to access Mattermost both via the app, and also at mattermost.sanger.ac.uk in a browser. Once within the server, join the following channels:
+![channels](mattermost.png)
+* Write servicedesk asking for iRODS access, and being added to group team205 on it.
+* Acquire GitHub credentials if you don't have them, and write the following people on Mattermost:
+  * Martin Prete (mp33), asking for access to JupyterHub.
+  * Krzysztof Polanski (kp9), asking for membership in the Teichlab GitHub organisation, granting access to [Scripts](https://github.com/Teichlab/mapcloud/tree/master/scripts) and [sctk](https://github.com/Teichlab/sctk) repositories.
+
+### Getting onto OpenStack
+
+* In order to access the cloud, write servicedesk asking for an OpenStack account on tenant team205 (tenant is cloud slang for a group)
 * Once your cloud account email arrives, follow the instructions to [retrieve your password](https://ssg-confluence.internal.sanger.ac.uk/pages/viewpage.action?pageId=66031299) and save it somewhere. Do not change it!
 * Go onto [Theta](http://theta.internal.sanger.ac.uk) and log in with your Sanger user name and the password you just saved.
 * Open up a terminal. Set yourself to the user you intend to connect to the cloud as. Write `ls ~/.ssh`. If you don't see an `id_rsa.pub`file, [generate an SSH key](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-mac-os-x).
