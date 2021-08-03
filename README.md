@@ -32,6 +32,8 @@ Ensure you've got all of the following sorted out.
   * Martin Prete (mp33), asking for access to JupyterHub.
   * Krzysztof Polanski (kp9), asking for membership in the Teichlab GitHub organisation, granting access to [Scripts](https://github.com/Teichlab/mapcloud/tree/master/scripts) and [sctk](https://github.com/Teichlab/sctk) repositories.
 
+For most analysis needs, JupyterHub is likely to suffice.
+
 ### Getting onto OpenStack
 
 * In order to access the cloud, write servicedesk asking for an OpenStack account on tenant team205 (tenant is cloud slang for a group)
@@ -80,6 +82,8 @@ Then run this for both cases:
 	echo -e "/dev/vdb\t/mnt\text4\tdefaults\t0\t0" | sudo tee -a /etc/fstab
 	sudo chown -R ubuntu: /mnt
 	cd /mnt && dd if=/dev/zero of=deleteme oflag=direct bs=1M count=1024 && rm deleteme
+
+In the event of attaching multiple volumes to a single instance, further volumes won't be on `/dev/vdb`. When processing the volume in Theta, the corresponding path will be shown. Alter the commands accordingly.
 
 If you intend to work with Rstudio, you'll need to setup login credentials for your user, i.e. ubuntu. To do this, call the following line and enter rstudio as your password, re-entering it immediately thereafter:
 
