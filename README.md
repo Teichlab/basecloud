@@ -12,16 +12,9 @@ This bit of text is going to detail the process of creating a functional machine
 
 If you don't see your preferred package on here, do not despair! A lot of the installed options come with a truckload of dependencies, so your everyday utility (ggplot2, numpy etc.) is here. And if it isn't here, you have the power to install more things within R/Rstudio, or via `sudo pip3` for python. There's also `apt-get` for more all-purpose stuff. The cloud does not come with mapping/genomics tools built in, those pipelines are supported by the second template mapcloud.
 
-### Basic OpenStack things
+## New starter checklist
 
-* The Teichlab allocation on OpenStack was estimated for 15 active users with reasonable computational needs, assuming a `m1.xlarge` instance per head with a 1TB volume to boot. As such, try not to use more than its resource total (16 cores, ~130 GB RAM, 1TB volume space) at a time between all your instances. If you do end up using more (dire computational straits happen), please free it up in a timely manner.
-* Even when not extending past your bit of resources, try to keep your instance life to a minimum. I'm not saying kill off your cloud if you wait two hours between analyses, but if the machine has been sitting around idly for a week you should probably get rid of it. The templates come stocked with a lot of requested tools to make killing off your machines as painless as possible, as pretty much everything will be waiting for you when you make a new one. If you set up something particularly annoying that you don't want to do again, you can take a personalised snapshot of your cloud. I'll walk you through the steps later on in the document.
-* Ideally, the volume storage should be mainly thought as space to let your analyses run and not an actual long-term storage option. You can quite easily copy data to/from the farm with `rsync`, once again I'll write how in a bit. I'd recommend saving all your analysis files to the mounted volumes as the built-in drive space of a lot of the cloud options is quite limited. Plus, you can theoretically swap volumes between machines, carrying the files across!
-* `screen -DR` is your friend. This command opens up a screen that won't stop existing when you log out of your cloud. As such, you can call this command, launch your two-week analysis and disconnect, and it will still run. Once inside the screen, use `ctrl+a, ctrl+d` to exit. You can spawn extra screens with `ctrl+a, ctrl+c` and cycle through them with `ctrl+space`. Kill off any screens you don't need by typing `exit`. There's [a lot more](http://aperiodic.net/screen/quick_reference), but this is all I've needed so far.
-
-### New starter checklist
-
-Ensure you've got all of the following sorted out.
+Ensure you've got all of the following sorted out to start.
 
 * Use your Sanger login credentials to get access to:
   * [VPN](https://www.sanger.ac.uk/covid/)
@@ -33,6 +26,13 @@ Ensure you've got all of the following sorted out.
   * Krzysztof Polanski (kp9), asking for membership in the Teichlab GitHub organisation, granting access to [Scripts](https://github.com/Teichlab/mapcloud/tree/master/scripts) and [sctk](https://github.com/Teichlab/sctk) repositories.
 
 For most analysis needs, JupyterHub is likely to suffice.
+
+### Basic OpenStack things
+
+* The Teichlab allocation on OpenStack was estimated for 15 active users with reasonable computational needs, assuming a `m1.xlarge` instance per head with a 1TB volume to boot. As such, try not to use more than its resource total (16 cores, ~130 GB RAM, 1TB volume space) at a time between all your instances. If you do end up using more (dire computational straits happen), please free it up in a timely manner.
+* Even when not extending past your bit of resources, try to keep your instance life to a minimum. I'm not saying kill off your cloud if you wait two hours between analyses, but if the machine has been sitting around idly for a week you should probably get rid of it. The templates come stocked with a lot of requested tools to make killing off your machines as painless as possible, as pretty much everything will be waiting for you when you make a new one. If you set up something particularly annoying that you don't want to do again, you can take a personalised snapshot of your cloud. I'll walk you through the steps later on in the document.
+* Ideally, the volume storage should be mainly thought as space to let your analyses run and not an actual long-term storage option. You can quite easily copy data to/from the farm with `rsync`, once again I'll write how in a bit. I'd recommend saving all your analysis files to the mounted volumes as the built-in drive space of a lot of the cloud options is quite limited. Plus, you can theoretically swap volumes between machines, carrying the files across!
+* `screen -DR` is your friend. This command opens up a screen that won't stop existing when you log out of your cloud. As such, you can call this command, launch your two-week analysis and disconnect, and it will still run. Once inside the screen, use `ctrl+a, ctrl+d` to exit. You can spawn extra screens with `ctrl+a, ctrl+c` and cycle through them with `ctrl+space`. Kill off any screens you don't need by typing `exit`. There's [a lot more](http://aperiodic.net/screen/quick_reference), but this is all I've needed so far.
 
 ### Getting onto OpenStack
 
